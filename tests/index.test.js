@@ -190,3 +190,108 @@ describe("User avatar information", async () => {
     expect(currentAvatar).toBeDefined();
   });
 });
+
+describe("Space information", () => {
+  let mapId;
+  let elementId1;
+  let elementId2;
+  let userToken;
+  let userId;
+  let adminId;
+  let adminToken;
+
+  beforeAll(async () => {
+    const username = `sanchit-${Math.random()}`;
+    const password = "password123";
+
+    const signupResponse = await axios.post(`${BACKEND}/api/v1/signup`, {
+      username,
+      password,
+      type: "admin",
+    });
+
+    adminId = signupResponse.data.userId;
+
+    const response = await axios.post(`${BACKEND}/api/v1/signin`, {
+      username,
+      password,
+    });
+
+    adminToken = response.token;
+
+    const userSignupResponse = await axios.post(`${BACKEND}/api/v1/signup`, {
+      username,
+      password,
+      type: "admin",
+    });
+
+    userId = userSignupResponse.data.userId;
+
+    const userSigninResponse = await axios.post(`${BACKEND}/api/v1/signin`, {
+      username,
+      password,
+    });
+
+    userToken = userSigninResponse.token;
+
+    const element1 = await axios.post(
+      `${BACKEND}/api/v1/admin/element`,
+      {
+        imageUrl:
+          "https://encrypted-tbn0.gstatic.com/shopping?q=tbn:ANd9GcRCRca3wAR4zjPPTzeIY9rSwbbqB6bB2hVkoTXN4eerXOIkJTG1GpZ9ZqSGYafQPToWy_JTcmV5RHXsAsWQC3tKnMlH_CsibsSZ5oJtbakq&usqp=CAE",
+        width: 1,
+        height: 1,
+        static: true,
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${adminToken}`,
+        },
+      }
+    );
+
+    const element2 = await axios.post(
+      `${BACKEND}/api/v1/admin/element`,
+      {
+        imageUrl:
+          "https://encrypted-tbn0.gstatic.com/shopping?q=tbn:ANd9GcRCRca3wAR4zjPPTzeIY9rSwbbqB6bB2hVkoTXN4eerXOIkJTG1GpZ9ZqSGYafQPToWy_JTcmV5RHXsAsWQC3tKnMlH_CsibsSZ5oJtbakq&usqp=CAE",
+        width: 1,
+        height: 1,
+        static: true,
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${adminToken}`,
+        },
+      }
+    );
+
+    elementId1 = element1.id;
+    elementId2 = element2.id;
+    const map = await axios.post(
+      `${BACKEND}/api/v1/admin/map`,
+      {
+        thumbnail: "https://thumbnail.com/a.png",
+        dimensions: "100x200",
+        name: "100 person interview room",
+        defaultElements: [
+          {
+            elementId: elementId1,
+            x: 20,
+            y: 20,
+          },
+          {
+            elementId: elementId2,
+            x: 18,
+            y: 20,
+          },
+        ],
+      },
+      { headers: { Authorization: `Bearer ${adminToken}` } }
+    );
+
+    map = map.id;
+  });
+
+  test("");
+});
